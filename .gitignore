@@ -1,5 +1,4 @@
 # 実際のキーが入ったファイル（絶対にコミットしない）
-soso.html
 config.js
 .env
 .env.local

@@ -1,4 +1,6 @@
 {
+  "buildCommand": "node -e \"require('fs').writeFileSync('config.js', 'window.SOSO_CONFIG={SUPABASE_URL:\\'' + process.env.SUPABASE_URL + '\\',SUPABASE_KEY:\\'' + process.env.SUPABASE_KEY + '\\',ADMIN_EMAIL:\\'' + process.env.ADMIN_EMAIL + '\\'};')\"",
+  "outputDirectory": ".",
   "routes": [
     { "src": "/", "dest": "/soso.html" }
   ]
