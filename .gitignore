@@ -1,0 +1,8 @@
+# 実際のキーが入ったファイル（絶対にコミットしない）
+config.js
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
