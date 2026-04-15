@@ -1294,30 +1294,91 @@
     }
     .ss-close:hover { background: rgba(255,255,255,.3); }
 
-    /* BGM選択バー */
-    .ss-bgm-bar {
+    /* BGM選択パネル */
+    .bgm-panel {
       position: absolute;
-      top: 16px; left: 50%;
-      transform: translateX(-50%);
+      inset: 0;
+      background: rgba(12,6,2,.94);
       display: flex;
-      gap: 6px;
-      z-index: 10;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      padding: 28px 20px;
     }
-    .ss-bgm-btn {
-      padding: 5px 12px;
-      border-radius: 100px;
-      border: 1px solid rgba(255,255,255,.3);
-      background: rgba(0,0,0,.3);
-      color: rgba(255,255,255,.75);
-      font-size: .72rem;
+    .bgm-panel-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e8d4b4;
+      margin-bottom: 22px;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+    .bgm-list {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+    .bgm-choice-btn {
+      width: 100%;
+      padding: 13px 18px;
+      background: rgba(255,255,255,.05);
+      border: 1.5px solid rgba(255,255,255,.13);
+      border-radius: 12px;
+      text-align: left;
       cursor: pointer;
-      transition: background .2s, color .2s;
-      white-space: nowrap;
+      transition: background .2s, border-color .2s;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    .ss-bgm-btn.active {
-      background: var(--brown);
-      border-color: var(--brown);
+    .bgm-choice-btn.active {
+      background: rgba(140,78,28,.55);
+      border-color: #c09060;
+    }
+    .bgm-choice-name {
+      font-size: .93rem;
+      font-weight: 600;
+      color: rgba(255,238,212,.85);
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .bgm-choice-sub {
+      font-size: .72rem;
+      color: rgba(220,185,130,.6);
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .bgm-choice-btn.active .bgm-choice-name { color: #fff; }
+    .bgm-choice-btn.active .bgm-choice-sub  { color: rgba(255,215,160,.8); }
+    .bgm-start-btn {
+      width: 100%;
+      max-width: 340px;
+      padding: 16px;
+      background: linear-gradient(135deg, #a0622a 0%, #7a4520 100%);
       color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      letter-spacing: .08em;
+      cursor: pointer;
+      box-shadow: 0 5px 22px rgba(120,60,20,.5);
+      transition: opacity .2s;
+    }
+    .bgm-start-btn:hover { opacity: .88; }
+    /* 著作権表記 */
+    .ss-credit {
+      position: absolute;
+      bottom: 7px; right: 10px;
+      font-size: .55rem;
+      color: rgba(255,255,255,.22);
+      pointer-events: none;
+      letter-spacing: .03em;
+      z-index: 5;
     }
 
     /* 写真エリア */
@@ -1874,30 +1935,39 @@
 <div id="slideshow-overlay">
   <button class="ss-close" onclick="closeSlideshow()">✕</button>
 
-  <!-- BGM選択 -->
-  <div class="ss-bgm-bar">
-    <button class="ss-bgm-btn active" id="bgm-btn-0" onclick="selectBgm(0)">🎹 ピアノ</button>
-    <button class="ss-bgm-btn"        id="bgm-btn-1" onclick="selectBgm(1)">🎸 アコースティック</button>
-    <button class="ss-bgm-btn"        id="bgm-btn-2" onclick="selectBgm(2)">🔇 なし</button>
+  <!-- BGM選択パネル（最初に表示） -->
+  <div class="bgm-panel" id="bgm-panel">
+    <p class="bgm-panel-title">BGMを選んでください</p>
+    <div class="bgm-list" id="bgm-list"></div>
+    <button class="bgm-start-btn" onclick="startSlideshowWithBgm()">▶ &nbsp;スライドショーを始める</button>
   </div>
 
-  <!-- 写真 -->
-  <div class="ss-photo-wrap">
-    <button class="ss-arrow left"  onclick="ssStep(-1)">‹</button>
-    <img id="ss-img" class="ss-img" src="" alt="" />
-    <button class="ss-arrow right" onclick="ssStep(1)">›</button>
+  <!-- スライドショー本体（BGM選択後に表示） -->
+  <div id="ss-content" style="display:none; width:100%; flex-direction:column; align-items:center; justify-content:center; flex:1;">
+    <!-- 写真 -->
+    <div class="ss-photo-wrap">
+      <button class="ss-arrow left"  onclick="ssStep(-1)">‹</button>
+      <img id="ss-img" class="ss-img" src="" alt="" />
+      <button class="ss-arrow right" onclick="ssStep(1)">›</button>
+    </div>
+
+    <!-- 吹き出しコメント -->
+    <div class="ss-bubble-wrap">
+      <div class="ss-bubble" id="ss-bubble"></div>
+    </div>
+
+    <!-- フッター -->
+    <div class="ss-footer">
+      <p class="ss-title" id="ss-footer-title"></p>
+      <div class="ss-dots" id="ss-dots"></div>
+    </div>
   </div>
 
-  <!-- 吹き出しコメント -->
-  <div class="ss-bubble-wrap">
-    <div class="ss-bubble" id="ss-bubble"></div>
-  </div>
+  <!-- 著作権表記 -->
+  <p class="ss-credit" id="ss-credit" style="display:none;">BGM: 魔王魂 maou.audio</p>
 
-  <!-- フッター -->
-  <div class="ss-footer">
-    <p class="ss-title" id="ss-footer-title"></p>
-    <div class="ss-dots" id="ss-dots"></div>
-  </div>
+  <!-- BGM再生用 -->
+  <audio id="ss-audio" loop></audio>
 </div>
 
 <!-- ==================== 5. 家族共有画面 ==================== -->
@@ -2699,9 +2769,34 @@
   let _ssIndex = 0;
   let _ssTimer = null;
   let _ssImages = []; // { src, comment }
-  let _ssAudioCtx = null;
-  let _ssBgmMode = 0; // 0=piano 1=acoustic 2=none
-  let _ssOscNodes = [];
+
+  const SS_BGM_LIST = [
+    { name: 'しっとりピアノ', sub: '安らぎの思い',     url: 'https://maou.audio/sound/bgm/maou_bgm_piano40.mp3' },
+    { name: '温かいピアノ',   sub: '見渡す街へ・故郷', url: 'https://maou.audio/sound/bgm/maou_bgm_piano35.mp3' },
+    { name: '懐かしいピアノ', sub: 'セピアの風・回想', url: 'https://maou.audio/sound/bgm/maou_bgm_piano37.mp3' },
+    { name: '静かなピアノ',   sub: '静寂の世界へ',     url: 'https://maou.audio/sound/bgm/maou_bgm_piano34.mp3' },
+    { name: 'なし',           sub: '',                  url: null },
+  ];
+  let _ssBgmChoice = parseInt(localStorage.getItem('ss_bgm_choice') || '0');
+
+  function buildBgmPanel() {
+    const list = document.getElementById('bgm-list');
+    list.innerHTML = '';
+    SS_BGM_LIST.forEach((bgm, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'bgm-choice-btn' + (i === _ssBgmChoice ? ' active' : '');
+      btn.id = `bgm-choice-${i}`;
+      btn.onclick = () => selectBgmChoice(i);
+      btn.innerHTML = `<span class="bgm-choice-name">${bgm.name}</span>`
+        + (bgm.sub ? `<span class="bgm-choice-sub">${bgm.sub}</span>` : '');
+      list.appendChild(btn);
+    });
+  }
+
+  function selectBgmChoice(i) {
+    _ssBgmChoice = i;
+    document.querySelectorAll('.bgm-choice-btn').forEach((b, j) => b.classList.toggle('active', j === i));
+  }
 
   function openSlideshow() {
     if (selectedFiles.length === 0) { alert('写真がありません。'); return; }
@@ -2709,15 +2804,27 @@
       src: URL.createObjectURL(f),
       comment: photoComments[i] || ''
     }));
-    _ssIndex = 0;
-    buildSsDots();
     const ssName = getAlbumEditName() || getPersonName();
     const ssAge  = getAlbumAge();
     document.getElementById('ss-footer-title').textContent = ssName + 'の' + ssAge + '年';
+    buildBgmPanel();
+    document.getElementById('bgm-panel').style.display   = 'flex';
+    document.getElementById('ss-content').style.display  = 'none';
+    document.getElementById('ss-credit').style.display   = 'none';
     document.getElementById('slideshow-overlay').classList.add('open');
+  }
+
+  function startSlideshowWithBgm() {
+    localStorage.setItem('ss_bgm_choice', _ssBgmChoice);
+    document.getElementById('bgm-panel').style.display  = 'none';
+    document.getElementById('ss-content').style.display = 'flex';
+    _ssIndex = 0;
+    buildSsDots();
     ssGoto(0);
     ssStartTimer();
-    startBgm(_ssBgmMode);
+    startBgm(_ssBgmChoice);
+    document.getElementById('ss-credit').style.display =
+      SS_BGM_LIST[_ssBgmChoice].url ? 'block' : 'none';
   }
 
   function closeSlideshow() {
@@ -2772,95 +2879,22 @@
     _ssTimer = setTimeout(() => { ssGoto(_ssIndex + 1); ssStartTimer(); }, 3000);
   }
 
-  // ===== BGM（Web Audio API） =====
-  function selectBgm(mode) {
-    _ssBgmMode = mode;
-    document.querySelectorAll('.ss-bgm-btn').forEach((b, i) => b.classList.toggle('active', i === mode));
-    stopBgm();
-    startBgm(mode);
-  }
-
-  function startBgm(mode) {
-    if (mode === 2) return;
-    try {
-      _ssAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (mode === 0) playPiano(_ssAudioCtx);
-      else            playAcoustic(_ssAudioCtx);
-    } catch(e) {}
+  // ===== BGM（<audio>要素） =====
+  function startBgm(choice) {
+    const bgm = SS_BGM_LIST[choice];
+    if (!bgm.url) return;
+    const audio = document.getElementById('ss-audio');
+    audio.src = bgm.url;
+    audio.volume = 0.4;
+    audio.loop = true;
+    audio.play().catch(() => {});
   }
 
   function stopBgm() {
-    _ssOscNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-    _ssOscNodes = [];
-    if (_ssAudioCtx) { try { _ssAudioCtx.close(); } catch(e) {} _ssAudioCtx = null; }
-  }
-
-  // ピアノ：Cメジャーペンタトニックをゆっくり繰り返す
-  function playPiano(ctx) {
-    const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 392.00, 329.63];
-    const master = ctx.createGain();
-    master.gain.value = 0.12;
-    master.connect(ctx.destination);
-
-    function scheduleNote(freq, startTime) {
-      const osc = ctx.createOscillator();
-      const env = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      env.gain.setValueAtTime(0, startTime);
-      env.gain.linearRampToValueAtTime(1, startTime + 0.05);
-      env.gain.exponentialRampToValueAtTime(0.001, startTime + 1.4);
-      osc.connect(env); env.connect(master);
-      osc.start(startTime);
-      osc.stop(startTime + 1.5);
-      _ssOscNodes.push(osc);
-    }
-
-    function loop(startTime) {
-      if (!_ssAudioCtx) return;
-      notes.forEach((f, i) => scheduleNote(f, startTime + i * 0.55));
-      const next = startTime + notes.length * 0.55 + 0.5;
-      _ssOscNodes.push({ stop: () => {} }); // placeholder
-      setTimeout(() => { if (_ssAudioCtx) loop(ctx.currentTime); }, (notes.length * 0.55 + 0.3) * 1000);
-    }
-    loop(ctx.currentTime + 0.1);
-  }
-
-  // アコースティック：温かみのあるコード感
-  function playAcoustic(ctx) {
-    const chords = [
-      [261.63, 329.63, 392.00],
-      [293.66, 349.23, 440.00],
-      [246.94, 311.13, 369.99],
-      [261.63, 329.63, 392.00],
-    ];
-    const master = ctx.createGain();
-    master.gain.value = 0.07;
-    master.connect(ctx.destination);
-
-    function scheduleChord(freqs, startTime) {
-      freqs.forEach(freq => {
-        const osc = ctx.createOscillator();
-        const env = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        env.gain.setValueAtTime(0, startTime);
-        env.gain.linearRampToValueAtTime(1, startTime + 0.1);
-        env.gain.exponentialRampToValueAtTime(0.001, startTime + 2.2);
-        osc.connect(env); env.connect(master);
-        osc.start(startTime);
-        osc.stop(startTime + 2.5);
-        _ssOscNodes.push(osc);
-      });
-    }
-
-    function loop(startTime) {
-      if (!_ssAudioCtx) return;
-      chords.forEach((c, i) => scheduleChord(c, startTime + i * 2.4));
-      const total = chords.length * 2.4 + 0.4;
-      setTimeout(() => { if (_ssAudioCtx) loop(ctx.currentTime); }, (total - 0.2) * 1000);
-    }
-    loop(ctx.currentTime + 0.1);
+    const audio = document.getElementById('ss-audio');
+    audio.pause();
+    audio.currentTime = 0;
+    audio.src = '';
   }
 
   // ===== ユーザーIDプレフィックス付きlocalStorageキー =====
