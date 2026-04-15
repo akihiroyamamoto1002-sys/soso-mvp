@@ -1665,6 +1665,294 @@
     /* ハイドレーション用フェード */
     @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
     .screen.active { animation: fadeIn .35s ease; }
+
+    /* ==============================
+       フォトブックモード
+    ============================== */
+    #photobook-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: #3d2b1f;
+      flex-direction: column;
+    }
+    #photobook-overlay.open { display: flex; }
+    .pb-header {
+      flex-shrink: 0;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(196,168,130,.2);
+    }
+    .pb-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: #e8d4b4;
+      letter-spacing: .06em;
+    }
+    .pb-close-btn {
+      background: rgba(255,255,255,.1);
+      border: none;
+      color: #e8d4b4;
+      font-size: 1rem;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .pb-close-btn:hover { background: rgba(255,255,255,.22); }
+    .pb-container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .pb-left {
+      flex: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 14px 10px 10px;
+      gap: 8px;
+      min-width: 0;
+    }
+    .pb-img-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .pb-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.55);
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+    .pb-img.visible { opacity: 1; }
+    .pb-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(196,168,130,.15);
+      border: 1px solid rgba(196,168,130,.3);
+      color: #c4a882;
+      font-size: 1.5rem;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5;
+      transition: background .2s;
+    }
+    .pb-arrow:hover { background: rgba(196,168,130,.32); }
+    .pb-arrow.left  { left: 4px; }
+    .pb-arrow.right { right: 4px; }
+    .pb-page {
+      font-size: .72rem;
+      color: rgba(196,168,130,.6);
+      letter-spacing: .08em;
+      flex-shrink: 0;
+    }
+    .pb-divider {
+      width: 1.5px;
+      flex-shrink: 0;
+      background: linear-gradient(to bottom, transparent 4%, #c4a882 18%, #c4a882 82%, transparent 96%);
+    }
+    .pb-right {
+      flex: 4;
+      background: #faf6f0;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 14px 14px;
+      overflow-y: auto;
+      min-width: 0;
+    }
+    .pb-comment-label {
+      font-size: .68rem;
+      font-weight: 700;
+      color: #a07040;
+      letter-spacing: .14em;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .pb-comment-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .88rem;
+      color: #3c2810;
+      line-height: 1.9;
+      flex: 1;
+      word-break: break-all;
+    }
+    .pb-comment-empty {
+      font-size: .82rem;
+      color: #c4a882;
+      line-height: 1.8;
+      flex: 1;
+    }
+    .pb-yose-divider {
+      border: none;
+      border-top: 1px dashed #d8c4a8;
+      margin: 12px 0 8px;
+      flex-shrink: 0;
+    }
+    .pb-yose-label {
+      font-size: .65rem;
+      color: #a07040;
+      letter-spacing: .1em;
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+    .pb-yose-msg {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .78rem;
+      color: #6b4226;
+      line-height: 1.7;
+      flex-shrink: 0;
+    }
+    .pb-yose-author {
+      font-size: .65rem;
+      color: #a07040;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    /* ==============================
+       並び替えモード
+    ============================== */
+    .reorder-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 11px 14px;
+      background: #fff8f0;
+      border: 1.5px solid #e8d0b0;
+      border-radius: 12px;
+      animation: fadeIn .2s ease;
+    }
+    .reorder-save-btn {
+      flex: 1;
+      padding: 11px;
+      background: linear-gradient(135deg, #a0622a 0%, #7a4520 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+    }
+    .reorder-cancel-btn {
+      flex: 1;
+      padding: 11px;
+      background: transparent;
+      color: #a07040;
+      border: 1.5px solid #d4b898;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+    }
+    .drag-handle {
+      position: absolute;
+      top: 4px; left: 4px;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      font-size: .7rem;
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: grab;
+      z-index: 4;
+      touch-action: none;
+      user-select: none;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .album-grid-cell.dragging  { opacity: .35; }
+    .album-grid-cell.drag-over { outline: 2.5px solid #c4895c; outline-offset: -2px; }
+
+    /* ==============================
+       全写真一覧
+    ============================== */
+    #allphotos-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 550;
+      background: #faf6f0;
+      flex-direction: column;
+    }
+    #allphotos-overlay.open { display: flex; }
+    .ap-header {
+      flex-shrink: 0;
+      padding: 16px 16px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e8d8c4;
+      background: #fdf9f4;
+    }
+    .ap-header-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #5c3315;
+    }
+    .ap-close-btn {
+      background: rgba(160,112,64,.1);
+      border: none;
+      color: #7a4520;
+      font-size: 1rem;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .ap-close-btn:hover { background: rgba(160,112,64,.2); }
+    .ap-grid-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+    .ap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    @media (min-width: 600px) { .ap-grid { grid-template-columns: repeat(4, 1fr); } }
+    .ap-thumb {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .ap-thumb:active { transform: scale(.93); }
+    .ap-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .ap-thumb-badge {
+      position: absolute;
+      top: 4px; right: 4px;
+      font-size: .72rem;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.45));
+    }
   </style>
 </head>
 <body>
@@ -1853,6 +2141,12 @@
     <p class="album-hero-sub"><span id="album-photo-count">0</span>枚の思い出が集まりました</p>
   </div>
 
+  <!-- 並び替えバー（reorderモード時に表示） -->
+  <div id="reorder-bar" class="reorder-bar" style="display:none;">
+    <button class="reorder-save-btn"   onclick="saveReorder()">保存する</button>
+    <button class="reorder-cancel-btn" onclick="cancelReorder()">キャンセル</button>
+  </div>
+
   <!-- 写真グリッド -->
   <div class="album-grid" id="album-grid"></div>
 
@@ -1875,6 +2169,15 @@
     </button>
     <button class="btn-share" onclick="onShare()">
       🔗 &nbsp;家族に共有する
+    </button>
+    <button class="btn-outline" onclick="openPhotobook(0)" style="border-color:#c4895c; color:#8b5a30;">
+      📖 &nbsp;フォトブックで見る
+    </button>
+    <button class="btn-outline" id="reorder-btn" onclick="toggleReorderMode()" style="border-color:#c4895c; color:#8b5a30;">
+      ✏️ &nbsp;並び替え
+    </button>
+    <button class="btn-outline" onclick="openAllPhotos()" style="border-color:#c4895c; color:#8b5a30;">
+      🔍 &nbsp;全て見る
     </button>
     <button class="btn-outline" onclick="showScreen('screen-upload')">
       📷 &nbsp;もっと写真を追加する
@@ -2061,6 +2364,47 @@
     <p class="modal-char-count"><span id="char-count">0</span> / 100文字</p>
     <button class="modal-save-btn" onclick="saveComment()">保存する</button>
     <button class="modal-delete-btn" id="modal-delete-btn" onclick="deleteComment()" style="display:none;">この思い出を削除する</button>
+  </div>
+</div>
+
+<!-- ==================== フォトブックモード ==================== -->
+<div id="photobook-overlay">
+  <div class="pb-header">
+    <p class="pb-title" id="pb-title">大切な人の75年</p>
+    <button class="pb-close-btn" onclick="closePhotobook()">✕</button>
+  </div>
+  <div class="pb-container">
+    <!-- 左：写真 -->
+    <div class="pb-left">
+      <div class="pb-img-wrap">
+        <button class="pb-arrow left"  onclick="pbStep(-1)">‹</button>
+        <img id="pb-img" class="pb-img" src="" alt="" />
+        <button class="pb-arrow right" onclick="pbStep(1)">›</button>
+      </div>
+      <p class="pb-page" id="pb-page">1 / 1</p>
+    </div>
+    <!-- 金色の仕切り -->
+    <div class="pb-divider"></div>
+    <!-- 右：コメント -->
+    <div class="pb-right">
+      <p class="pb-comment-label">思 い 出</p>
+      <div id="pb-comment" class="pb-comment-empty">この写真の思い出を追加しよう</div>
+      <hr class="pb-yose-divider" id="pb-yose-divider" style="display:none;">
+      <p class="pb-yose-label" id="pb-yose-label" style="display:none;">みんなからの一言</p>
+      <p class="pb-yose-msg"    id="pb-yose-msg"></p>
+      <p class="pb-yose-author" id="pb-yose-author"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 全写真一覧 ==================== -->
+<div id="allphotos-overlay">
+  <div class="ap-header">
+    <p class="ap-header-title" id="ap-header-title">全ての写真</p>
+    <button class="ap-close-btn" onclick="closeAllPhotos()">✕</button>
+  </div>
+  <div class="ap-grid-wrap">
+    <div class="ap-grid" id="ap-grid"></div>
   </div>
 </div>
 
@@ -2882,12 +3226,31 @@
   // ===== BGM（<audio>要素） =====
   function startBgm(choice) {
     const bgm = SS_BGM_LIST[choice];
-    if (!bgm.url) return;
+    const bgmUrl = bgm ? bgm.url : null;
+    if (!bgmUrl) return;
+
     const audio = document.getElementById('ss-audio');
-    audio.src = bgm.url;
+    audio.src = bgmUrl;
     audio.volume = 0.4;
     audio.loop = true;
-    audio.play().catch(() => {});
+    audio.load(); // src 変更後は必ず load() を呼ぶ
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log('BGM再生開始:', bgm.name);
+        })
+        .catch(err => {
+          console.error('BGM再生エラー:', err.name, err.message);
+          // autoplay ブロック時：次のタップ／クリックで再試行
+          const retry = () => {
+            audio.play().catch(e => console.error('BGMリトライ失敗:', e));
+          };
+          document.addEventListener('touchstart', retry, { once: true });
+          document.addEventListener('click',      retry, { once: true });
+        });
+    }
   }
 
   function stopBgm() {
@@ -2895,6 +3258,293 @@
     audio.pause();
     audio.currentTime = 0;
     audio.src = '';
+  }
+
+  // ===== フォトブックモード =====
+  let _pbImages = [];
+  let _pbIndex  = 0;
+  let _pbTouchStartX = 0;
+
+  function openPhotobook(startIndex) {
+    if (selectedFiles.length === 0) { alert('写真がありません。'); return; }
+    _pbImages = selectedFiles.map((f, i) => ({
+      src:     URL.createObjectURL(f),
+      comment: photoComments[i] || ''
+    }));
+    _pbIndex = startIndex || 0;
+    const name = getAlbumEditName() || getPersonName();
+    const age  = getAlbumAge();
+    document.getElementById('pb-title').textContent = name + 'の' + age + '年';
+    document.getElementById('photobook-overlay').classList.add('open');
+    pbGoto(_pbIndex);
+  }
+
+  function closePhotobook() {
+    document.getElementById('photobook-overlay').classList.remove('open');
+  }
+
+  function pbStep(dir) {
+    pbGoto((_pbIndex + dir + _pbImages.length) % _pbImages.length);
+  }
+
+  function pbGoto(index) {
+    _pbIndex = index;
+    const img = document.getElementById('pb-img');
+    img.classList.remove('visible');
+
+    setTimeout(() => {
+      const item = _pbImages[index];
+      img.src = item.src;
+      img.onload = () => img.classList.add('visible');
+      // ページカウンター
+      document.getElementById('pb-page').textContent = (index + 1) + ' / ' + _pbImages.length;
+      // コメント
+      const commentEl = document.getElementById('pb-comment');
+      if (item.comment) {
+        commentEl.className   = 'pb-comment-text';
+        commentEl.textContent = item.comment;
+      } else {
+        commentEl.className   = 'pb-comment-empty';
+        commentEl.textContent = 'この写真の思い出を追加しよう';
+      }
+      // 寄せ書き（最新1件）
+      const posts      = loadYosePosts();
+      const yoseDivider = document.getElementById('pb-yose-divider');
+      const yoseLabel   = document.getElementById('pb-yose-label');
+      const yoseMsg     = document.getElementById('pb-yose-msg');
+      const yoseAuthor  = document.getElementById('pb-yose-author');
+      if (posts.length > 0) {
+        const p = posts[0];
+        yoseDivider.style.display = '';
+        yoseLabel.style.display   = '';
+        yoseMsg.textContent       = '「' + p.msg + '」';
+        yoseAuthor.textContent    = '— ' + p.name;
+      } else {
+        yoseDivider.style.display = 'none';
+        yoseLabel.style.display   = 'none';
+        yoseMsg.textContent = yoseAuthor.textContent = '';
+      }
+    }, 180);
+  }
+
+  // キーボード操作
+  document.addEventListener('keydown', e => {
+    const pbOpen = document.getElementById('photobook-overlay').classList.contains('open');
+    if (!pbOpen) return;
+    if (e.key === 'ArrowLeft')  pbStep(-1);
+    if (e.key === 'ArrowRight') pbStep(1);
+    if (e.key === 'Escape')     closePhotobook();
+  });
+
+  // スワイプ操作
+  document.getElementById('photobook-overlay').addEventListener('touchstart', e => {
+    _pbTouchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  document.getElementById('photobook-overlay').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _pbTouchStartX;
+    if (Math.abs(dx) > 40) pbStep(dx < 0 ? 1 : -1);
+  });
+
+  // ===== 並び替えモード =====
+  let _reorderMode    = false;
+  let _origFiles      = null;
+  let _origComments   = null;
+  let _dragSrcIdx     = -1;
+  let _touchDragGhost = null;
+  let _touchDragSrcIdx = -1;
+
+  function toggleReorderMode() {
+    _reorderMode ? cancelReorder() : enterReorderMode();
+  }
+
+  function enterReorderMode() {
+    if (selectedFiles.length === 0) { alert('写真がありません。'); return; }
+    _reorderMode   = true;
+    _origFiles    = selectedFiles.slice();
+    _origComments = Object.assign({}, photoComments);
+    document.getElementById('reorder-bar').style.display = 'flex';
+    document.getElementById('reorder-btn').textContent   = '✏️ 並び替え中...';
+    addDragHandles();
+  }
+
+  function addDragHandles() {
+    document.getElementById('album-grid')
+      .querySelectorAll('.album-grid-cell')
+      .forEach((cell, i) => {
+        cell.onclick    = null;
+        cell.draggable  = true;
+        cell.dataset.dragIndex = i;
+
+        const handle = document.createElement('div');
+        handle.className   = 'drag-handle';
+        handle.textContent = '☰';
+        handle.addEventListener('touchstart', onTouchDragStart, { passive: false });
+        cell.appendChild(handle);
+
+        cell.addEventListener('dragstart', onDragStart);
+        cell.addEventListener('dragover',  onDragOver);
+        cell.addEventListener('dragleave', onDragLeave);
+        cell.addEventListener('drop',      onDrop);
+        cell.addEventListener('dragend',   onDragEnd);
+      });
+  }
+
+  function onDragStart(e) {
+    _dragSrcIdx = parseInt(e.currentTarget.dataset.dragIndex);
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+  function onDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+  }
+  function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+  function onDrop(e) {
+    e.preventDefault();
+    const dest = parseInt(e.currentTarget.dataset.dragIndex);
+    e.currentTarget.classList.remove('drag-over');
+    if (_dragSrcIdx !== dest) { reorderItems(_dragSrcIdx, dest); refreshReorderGrid(); }
+    _dragSrcIdx = -1;
+  }
+  function onDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    document.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
+  }
+
+  function reorderItems(from, to) {
+    const len   = selectedFiles.length;
+    const order = Array.from({ length: len }, (_, i) => i);
+    const [moved] = order.splice(from, 1);
+    order.splice(to, 0, moved);
+
+    const snapFiles    = selectedFiles.slice();
+    const snapComments = Object.assign({}, photoComments);
+    order.forEach((origIdx, newIdx) => {
+      selectedFiles[newIdx] = snapFiles[origIdx];
+      photoComments[newIdx] = snapComments[origIdx] || '';
+    });
+  }
+
+  function refreshReorderGrid() {
+    buildAlbum();
+    document.getElementById('reorder-bar').style.display = 'flex';
+    addDragHandles();
+  }
+
+  function saveReorder() {
+    _reorderMode = false;
+    _origFiles = _origComments = null;
+    document.getElementById('reorder-bar').style.display = 'none';
+    document.getElementById('reorder-btn').textContent   = '✏️ 並び替え';
+    buildAlbum();
+  }
+
+  function cancelReorder() {
+    if (_origFiles) {
+      _origFiles.forEach((f, i) => { selectedFiles[i] = f; });
+      selectedFiles.length = _origFiles.length;
+      const len = _origFiles.length;
+      for (let i = 0; i < len; i++) photoComments[i] = _origComments[i] || '';
+    }
+    _reorderMode = false;
+    _origFiles = _origComments = null;
+    document.getElementById('reorder-bar').style.display = 'none';
+    document.getElementById('reorder-btn').textContent   = '✏️ 並び替え';
+    buildAlbum();
+  }
+
+  // タッチドラッグ
+  function onTouchDragStart(e) {
+    e.preventDefault();
+    const cell = e.currentTarget.closest('.album-grid-cell');
+    if (!cell) return;
+    _touchDragSrcIdx = parseInt(cell.dataset.dragIndex);
+    cell.classList.add('dragging');
+
+    const rect    = cell.getBoundingClientRect();
+    const touch   = e.touches[0];
+    const offsetX = touch.clientX - rect.left;
+    const offsetY = touch.clientY - rect.top;
+
+    const ghost = cell.cloneNode(true);
+    ghost.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;`
+      + `width:${rect.width}px;height:${rect.height}px;`
+      + `opacity:.75;pointer-events:none;z-index:9999;border-radius:8px;`;
+    document.body.appendChild(ghost);
+    _touchDragGhost = ghost;
+
+    const moveGhost = ev => {
+      ev.preventDefault();
+      const t = ev.touches[0];
+      ghost.style.left = (t.clientX - offsetX) + 'px';
+      ghost.style.top  = (t.clientY - offsetY) + 'px';
+      ghost.style.visibility = 'hidden';
+      const under = document.elementFromPoint(t.clientX, t.clientY);
+      ghost.style.visibility = '';
+      const target = under && under.closest('.album-grid-cell');
+      document.querySelectorAll('.album-grid-cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+      if (target && target !== cell) target.classList.add('drag-over');
+    };
+
+    const endDrag = ev => {
+      const t = ev.changedTouches[0];
+      ghost.remove();
+      _touchDragGhost = null;
+      cell.classList.remove('dragging');
+      ghost.style.visibility = 'hidden';
+      const under  = document.elementFromPoint(t.clientX, t.clientY);
+      const target = under && under.closest('.album-grid-cell');
+      document.querySelectorAll('.album-grid-cell.drag-over').forEach(c => c.classList.remove('drag-over'));
+      if (target && target !== cell) {
+        const dest = parseInt(target.dataset.dragIndex);
+        if (!isNaN(dest) && dest !== _touchDragSrcIdx) {
+          reorderItems(_touchDragSrcIdx, dest);
+          refreshReorderGrid();
+        }
+      }
+      document.removeEventListener('touchmove', moveGhost);
+    };
+
+    document.addEventListener('touchmove', moveGhost, { passive: false });
+    document.addEventListener('touchend',  endDrag,   { once: true });
+  }
+
+  // ===== 全写真一覧 =====
+  function openAllPhotos() {
+    if (selectedFiles.length === 0) { alert('写真がありません。'); return; }
+    const grid = document.getElementById('ap-grid');
+    grid.innerHTML = '';
+    const name = getAlbumEditName() || getPersonName();
+    const age  = getAlbumAge();
+    document.getElementById('ap-header-title').textContent =
+      name + 'の' + age + '年 — 全 ' + selectedFiles.length + ' 枚';
+
+    selectedFiles.forEach((f, i) => {
+      const src   = URL.createObjectURL(f);
+      const thumb = document.createElement('div');
+      thumb.className = 'ap-thumb';
+      thumb.onclick   = () => { closeAllPhotos(); openPhotobook(i); };
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = f.name;
+      thumb.appendChild(img);
+
+      if (photoComments[i]) {
+        const badge = document.createElement('span');
+        badge.className   = 'ap-thumb-badge';
+        badge.textContent = '💬';
+        thumb.appendChild(badge);
+      }
+      grid.appendChild(thumb);
+    });
+
+    document.getElementById('allphotos-overlay').classList.add('open');
+  }
+
+  function closeAllPhotos() {
+    document.getElementById('allphotos-overlay').classList.remove('open');
   }
 
   // ===== ユーザーIDプレフィックス付きlocalStorageキー =====
