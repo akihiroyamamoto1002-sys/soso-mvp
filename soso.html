@@ -433,6 +433,82 @@
       color: var(--brown2);
       line-height: 1.3;
       margin-bottom: 8px;
+      position: relative;
+    }
+    .title-edit-btn {
+      background: none;
+      border: none;
+      font-size: .9rem;
+      cursor: pointer;
+      opacity: .5;
+      padding: 0 0 0 6px;
+      vertical-align: middle;
+      transition: opacity .2s;
+    }
+    .title-edit-btn:hover { opacity: 1; }
+    .album-title-editor {
+      background: #fff9f3;
+      border: 1.5px solid var(--beige);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+    .title-edit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .title-edit-label {
+      font-size: .78rem;
+      color: var(--muted);
+      width: 40px;
+      flex-shrink: 0;
+    }
+    .title-edit-input {
+      flex: 1;
+      border: 1.5px solid var(--beige);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--brown2);
+      background: #fff;
+      outline: none;
+    }
+    .title-edit-input--age { max-width: 80px; flex: none; }
+    .title-edit-input:focus { border-color: var(--brown); }
+    .title-edit-preview {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--brown2);
+      text-align: center;
+      padding: 8px 0 12px;
+      letter-spacing: .04em;
+    }
+    .title-edit-save {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .title-edit-cancel {
+      width: 100%;
+      background: none;
+      border: 1px solid #d0b89a;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: .9rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .title-save-toast {
+      text-align: center;
+      font-size: .9rem;
+      color: #5a9e6a;
+      padding-top: 8px;
+      animation: fadeIn .3s ease;
     }
     .album-hero-sub {
       font-size: 1rem;
@@ -1590,7 +1666,24 @@
   <!-- 完成バナー -->
   <div class="album-hero">
     <div class="album-hero-badge">✨ 整理完了</div>
-    <h2 class="album-hero-title"><span id="album-person-name">大切な人</span>の75年</h2>
+    <h2 class="album-hero-title" id="album-hero-title-wrap">
+      <span id="album-person-name">大切な人</span>の<span id="album-age">75</span>年
+      <button class="title-edit-btn" onclick="enterTitleEditMode()" title="タイトルを編集">✏️</button>
+    </h2>
+    <div id="album-title-editor" class="album-title-editor" style="display:none;">
+      <div class="title-edit-row">
+        <label class="title-edit-label">お名前</label>
+        <input id="edit-person-name" class="title-edit-input" type="text" placeholder="大切な人" />
+      </div>
+      <div class="title-edit-row">
+        <label class="title-edit-label">年齢</label>
+        <input id="edit-age" class="title-edit-input title-edit-input--age" type="number" min="1" max="120" placeholder="75" />
+      </div>
+      <div class="title-edit-preview" id="title-edit-preview">大切な人の75年</div>
+      <button class="btn-primary title-edit-save" onclick="saveTitleEdit()">保存する</button>
+      <button class="title-edit-cancel" onclick="cancelTitleEdit()">キャンセル</button>
+      <div id="title-save-toast" class="title-save-toast" style="display:none;">✅ 保存しました</div>
+    </div>
     <p class="album-hero-sub"><span id="album-photo-count">0</span>枚の思い出が集まりました</p>
   </div>
 
@@ -2029,10 +2122,13 @@
 
     // 名前を反映
     document.getElementById('album-person-name').textContent = name;
+    document.getElementById('album-age').textContent = '75';
 
     // 表紙を更新
-    document.getElementById('album-cover-title').textContent = name + 'の75年';
     document.getElementById('album-cover-year').textContent  = new Date().getFullYear() + '年';
+
+    // localStorage に保存済みのタイトル編集を適用
+    applyTitleOverrides();
 
     if (selectedFiles.length === 0) {
       for (let i = 0; i < 9; i++) {
@@ -2063,6 +2159,76 @@
 
     updateYoseBanner();
   }
+
+  // ===== アルバムタイトル編集 =====
+  const TITLE_STORAGE_KEY = 'album_title_edit';
+
+  function getAlbumAge() {
+    return localStorage.getItem(TITLE_STORAGE_KEY + '_age') || '75';
+  }
+  function getAlbumEditName() {
+    return localStorage.getItem(TITLE_STORAGE_KEY + '_name') || '';
+  }
+
+  function applyTitleOverrides() {
+    const nameOverride = getAlbumEditName();
+    const age = getAlbumAge();
+    if (nameOverride) {
+      document.getElementById('album-person-name').textContent = nameOverride;
+    }
+    document.getElementById('album-age').textContent = age;
+    const displayName = nameOverride || document.getElementById('album-person-name').textContent;
+    document.getElementById('album-cover-title').textContent = displayName + 'の' + age + '年';
+  }
+
+  function enterTitleEditMode() {
+    const currentName = document.getElementById('album-person-name').textContent;
+    const currentAge  = document.getElementById('album-age').textContent;
+    document.getElementById('edit-person-name').value = currentName === '大切な人' ? '' : currentName;
+    document.getElementById('edit-age').value = currentAge;
+    updateTitlePreview();
+    document.getElementById('album-title-editor').style.display = 'block';
+    document.getElementById('edit-person-name').focus();
+  }
+
+  function cancelTitleEdit() {
+    document.getElementById('album-title-editor').style.display = 'none';
+  }
+
+  function updateTitlePreview() {
+    const name = document.getElementById('edit-person-name').value.trim() || getPersonName();
+    const age  = document.getElementById('edit-age').value.trim() || '75';
+    document.getElementById('title-edit-preview').textContent = name + 'の' + age + '年';
+  }
+
+  function saveTitleEdit() {
+    const name = document.getElementById('edit-person-name').value.trim();
+    const age  = document.getElementById('edit-age').value.trim() || '75';
+    const displayName = name || getPersonName();
+
+    localStorage.setItem(TITLE_STORAGE_KEY + '_name', displayName);
+    localStorage.setItem(TITLE_STORAGE_KEY + '_age', age);
+
+    document.getElementById('album-person-name').textContent = displayName;
+    document.getElementById('album-age').textContent = age;
+    document.getElementById('album-cover-title').textContent = displayName + 'の' + age + '年';
+    document.getElementById('ss-footer-title') && (document.getElementById('ss-footer-title').textContent = displayName + 'の' + age + '年');
+
+    const toast = document.getElementById('title-save-toast');
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+      document.getElementById('album-title-editor').style.display = 'none';
+    }, 1400);
+  }
+
+  // プレビュー更新をinputにバインド（DOM構築後）
+  document.addEventListener('DOMContentLoaded', () => {
+    const ni = document.getElementById('edit-person-name');
+    const ai = document.getElementById('edit-age');
+    if (ni) ni.addEventListener('input', updateTitlePreview);
+    if (ai) ai.addEventListener('input', updateTitlePreview);
+  });
 
   // ===== コメントモーダル =====
   let _modalIndex = -1;
@@ -2180,8 +2346,9 @@
     const name = data.name || '大切な人';
     countEl.textContent = data.photos.length;
     document.getElementById('album-person-name').textContent = name;
-    document.getElementById('album-cover-title').textContent = name + 'の75年';
+    document.getElementById('album-age').textContent = '75';
     document.getElementById('album-cover-year').textContent  = new Date().getFullYear() + '年';
+    applyTitleOverrides();
 
     data.photos.forEach((p, i) => {
       const cell = document.createElement('div');
