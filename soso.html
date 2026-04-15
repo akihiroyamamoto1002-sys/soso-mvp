@@ -2582,7 +2582,9 @@
     }));
     _ssIndex = 0;
     buildSsDots();
-    document.getElementById('ss-footer-title').textContent = getPersonName() + 'の75年';
+    const ssName = getAlbumEditName() || getPersonName();
+    const ssAge  = getAlbumAge();
+    document.getElementById('ss-footer-title').textContent = ssName + 'の' + ssAge + '年';
     document.getElementById('slideshow-overlay').classList.add('open');
     ssGoto(0);
     ssStartTimer();
