@@ -836,36 +836,46 @@
     .album-grid-cell:active img { transform: scale(.96); }
     .comment-badge {
       position: absolute;
-      top: 4px;
-      right: 5px;
-      font-size: .85rem;
+      top: 5px;
+      right: 6px;
+      font-size: .8rem;
       line-height: 1;
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,.45));
+      pointer-events: none;
     }
     /* 吹き出しコメント */
     .comment-bubble-wrap {
-      padding: 4px 5px 6px;
-      background: var(--bg);
+      padding: 7px 6px 6px;
+      background: transparent;
     }
     .comment-bubble {
       position: relative;
-      background: var(--white);
-      border-radius: 8px;
-      padding: 5px 7px;
-      font-size: .65rem;
-      color: var(--brown2);
-      line-height: 1.4;
-      box-shadow: 0 2px 6px rgba(107,66,38,.18);
+      background: #fff;
+      border-radius: 12px;
+      padding: 7px 9px;
+      font-size: .72rem;
+      font-family: 'Noto Serif JP', serif;
+      color: #6b4226;
+      line-height: 1.5;
+      box-shadow: 0 3px 10px rgba(107,66,38,.14), 0 1px 3px rgba(107,66,38,.08);
       word-break: break-all;
+      text-align: center;
+    }
+    .comment-bubble.empty {
+      color: #c4a882;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: .68rem;
     }
     .comment-bubble::before {
       content: '';
       position: absolute;
-      top: -6px; left: 8px;
-      border-width: 0 5px 6px;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0 6px 7px;
       border-style: solid;
-      border-color: transparent transparent var(--white);
-      filter: drop-shadow(0 -1px 1px rgba(107,66,38,.08));
+      border-color: transparent transparent #fff;
+      filter: drop-shadow(0 -1px 1px rgba(107,66,38,.06));
     }
 
     /* ==============================
@@ -887,74 +897,99 @@
     @keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
 
     .modal-sheet {
-      background: var(--bg);
-      border-radius: 20px 20px 0 0;
-      padding: 20px 20px 44px;
+      background: #fdf8f2;
+      border-radius: 24px 24px 0 0;
+      padding: 16px 20px 40px;
       width: 100%;
       max-width: 540px;
-      animation: sheetUp .25s ease;
+      animation: sheetUp .28s cubic-bezier(.22,.88,.36,1);
     }
-    @keyframes sheetUp { from { transform:translateY(60px); opacity:0; } to { transform:none; opacity:1; } }
+    @keyframes sheetUp { from { transform:translateY(70px); opacity:0; } to { transform:none; opacity:1; } }
 
     .modal-handle {
       width: 40px;
       height: 4px;
-      background: var(--beige2);
+      background: #e0cdb8;
       border-radius: 100px;
-      margin: 0 auto 20px;
+      margin: 0 auto 18px;
     }
     .modal-preview-img {
-      width: 80px;
-      height: 80px;
+      width: 88px;
+      height: 88px;
       object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid var(--beige2);
-      margin: 0 auto 16px;
+      border-radius: 50%;
+      border: 3px solid #e8d4bc;
+      margin: 0 auto 14px;
       display: block;
+      box-shadow: 0 4px 14px rgba(107,66,38,.18);
     }
     .modal-label {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--brown2);
+      font-size: .92rem;
+      font-weight: 600;
+      color: #a07040;
       font-family: 'Noto Serif JP', serif;
-      margin-bottom: 10px;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: .04em;
     }
+    .modal-input-row {
+      border-bottom: 2px solid #e8d8c6;
+      margin-bottom: 6px;
+      transition: border-color .2s;
+    }
+    .modal-input-row:focus-within { border-color: var(--brown); }
     .modal-textarea {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 1rem;
+      padding: 8px 4px 10px;
+      font-size: .98rem;
       font-family: 'Noto Sans JP', sans-serif;
       color: var(--text);
-      background: var(--white);
-      border: 2px solid var(--beige2);
-      border-radius: 12px;
+      background: transparent;
+      border: none;
       resize: none;
       height: 88px;
       outline: none;
-      transition: border-color .2s;
+      line-height: 1.7;
+      box-sizing: border-box;
     }
-    .modal-textarea:focus { border-color: var(--brown); }
     .modal-char-count {
       text-align: right;
-      font-size: .78rem;
-      color: var(--muted);
-      margin: 4px 0 16px;
+      font-size: .75rem;
+      color: #b09070;
+      margin: 2px 0 18px;
     }
-    .modal-btns { display: flex; gap: 10px; }
-    .modal-btns .btn-primary { flex:1; padding:16px; font-size:1rem; }
-    .btn-modal-close {
-      flex: 1;
-      padding: 16px;
-      background: var(--beige);
-      color: var(--brown);
+    .modal-save-btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #a0622a 0%, #7a4520 100%);
+      color: #fff;
       border: none;
-      border-radius: var(--radius);
+      border-radius: 12px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
+      font-family: 'Noto Sans JP', sans-serif;
+      letter-spacing: .06em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(120,60,20,.28);
+      transition: opacity .2s;
+      margin-bottom: 10px;
+    }
+    .modal-save-btn:hover { opacity: .88; }
+    .modal-delete-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      color: #c0665a;
+      border: 1.5px solid #e8b4ae;
+      border-radius: 12px;
+      font-size: .9rem;
+      font-family: 'Noto Sans JP', sans-serif;
       cursor: pointer;
       transition: background .2s;
     }
-    .btn-modal-close:hover { background: var(--beige2); }
+    .modal-delete-btn:hover { background: rgba(192,102,90,.07); }
 
     /* ==============================
        寄せ書き
@@ -1946,16 +1981,16 @@
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <img id="modal-preview" class="modal-preview-img" src="" alt="写真プレビュー" />
-    <p class="modal-label">この写真の思い出を一言どうぞ</p>
-    <textarea id="modal-textarea" class="modal-textarea"
-              placeholder="例：初めての運動会、みんな笑顔だった"
-              maxlength="50"
-              oninput="updateCharCount()"></textarea>
-    <p class="modal-char-count"><span id="char-count">0</span> / 50文字</p>
-    <div class="modal-btns">
-      <button class="btn-primary" onclick="saveComment()">💾 &nbsp;保存する</button>
-      <button class="btn-modal-close" onclick="closeModal()">閉じる</button>
+    <p class="modal-label">この写真の思い出を綴ってください</p>
+    <div class="modal-input-row">
+      <textarea id="modal-textarea" class="modal-textarea"
+                placeholder="例：初めての運動会、みんな笑顔だった"
+                maxlength="100"
+                oninput="updateCharCount()"></textarea>
     </div>
+    <p class="modal-char-count"><span id="char-count">0</span> / 100文字</p>
+    <button class="modal-save-btn" onclick="saveComment()">保存する</button>
+    <button class="modal-delete-btn" id="modal-delete-btn" onclick="deleteComment()" style="display:none;">この思い出を削除する</button>
   </div>
 </div>
 
@@ -2319,8 +2354,10 @@
   function openCommentModal(index, src) {
     _modalIndex = index;
     document.getElementById('modal-preview').src = src;
-    document.getElementById('modal-textarea').value = photoComments[index] || '';
+    const existing = photoComments[index] || '';
+    document.getElementById('modal-textarea').value = existing;
     updateCharCount();
+    document.getElementById('modal-delete-btn').style.display = existing ? 'block' : 'none';
     document.getElementById('comment-modal').classList.add('open');
     document.getElementById('modal-textarea').focus();
   }
@@ -2341,21 +2378,28 @@
   function saveComment() {
     const text = document.getElementById('modal-textarea').value.trim();
     const i = _modalIndex;
-
     if (i < 0) return;
     photoComments[i] = text;
-
-    // グリッドセルを更新
-    const cell = document.getElementById('album-grid').children[i];
-    if (cell) {
-      // 既存の吹き出しラップを除去して再描画
-      const old = cell.querySelector('.comment-bubble-wrap');
-      if (old) old.remove();
-      const oldBadge = cell.querySelector('.comment-badge');
-      if (oldBadge) oldBadge.remove();
-      appendCommentBubble(cell, i, text);
-    }
+    refreshCommentBubble(i, text);
     closeModal();
+  }
+
+  function deleteComment() {
+    const i = _modalIndex;
+    if (i < 0) return;
+    photoComments[i] = '';
+    refreshCommentBubble(i, '');
+    closeModal();
+  }
+
+  function refreshCommentBubble(i, text) {
+    const cell = document.getElementById('album-grid').children[i];
+    if (!cell) return;
+    const old = cell.querySelector('.comment-bubble-wrap');
+    if (old) old.remove();
+    const oldBadge = cell.querySelector('.comment-badge');
+    if (oldBadge) oldBadge.remove();
+    appendCommentBubble(cell, i, text);
   }
 
   function onShare() {
@@ -2628,23 +2672,25 @@
 
   // ===== 吹き出しヘルパー =====
   function appendCommentBubble(cell, index, text) {
-    // バッジ
+    // 既存バッジ除去
     const oldBadge = cell.querySelector('.comment-badge');
     if (oldBadge) oldBadge.remove();
 
-    if (!text) return;
+    // コメントありの場合は💬バッジを右上に
+    if (text) {
+      const badge = document.createElement('span');
+      badge.className = 'comment-badge';
+      badge.textContent = '💬';
+      cell.appendChild(badge);
+    }
 
-    const badge = document.createElement('span');
-    badge.className = 'comment-badge';
-    badge.textContent = '💬';
-    cell.appendChild(badge);
-
+    // 吹き出しは常に表示（空欄は薄いプレースホルダー）
     const wrap = document.createElement('div');
     wrap.className = 'comment-bubble-wrap';
     const bubble = document.createElement('div');
-    bubble.className = 'comment-bubble';
+    bubble.className = text ? 'comment-bubble' : 'comment-bubble empty';
     bubble.id = `comment-bar-${index}`;
-    bubble.textContent = text;
+    bubble.textContent = text || '+ 思い出を追加';
     wrap.appendChild(bubble);
     cell.appendChild(wrap);
   }
